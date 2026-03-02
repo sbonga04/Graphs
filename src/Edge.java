@@ -8,7 +8,7 @@ public class Edge implements Comparable<Edge> {
 
     //Constructors
     Edge(){}
-
+    //Loaded Construcor
     Edge(int from,int to,int weight){
         this.from = from;
         this.to = to;
