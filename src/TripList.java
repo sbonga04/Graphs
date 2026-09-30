@@ -168,23 +168,35 @@ public class TripList {
                    !!!!!!!!calling THE DYNAMIC APPROACH !!!!!!!!!!!!!!!!!""" + "\n");
 
         interval.sort(Comparator.comparing(Trip::getFinishTime));
+        long totalWorkHours = 12;
         //looking for optimal jobs.. just like prevously so here i'll just copy and paste the code from above since it's the same
         ArrayList<Trip> optimal = new ArrayList<>();
         Trip before_trip = interval.getFirst();
         optimal.add(before_trip);
 
-
+        long workHours = 0;
         for (int i =1 ; i < interval.size(); i ++){
 
             Trip current_trip = interval.get(i);
 
+            long tripDuration = ChronoUnit.HOURS.between(before_trip.getStartTime(), current_trip.getFinishTime());
+            //i will try and enforce the 12hour duration
+            if (workHours + totalWorkHours > 12)
+                continue;
+
             if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
                 optimal.add(current_trip);
                 before_trip = current_trip;
+
+                totalWorkHours += tripDuration;
             }
             //up until here... we now know who's on the optimal schedule
 
         }
+
+/*
+         set this up for testing if opt jobs can be printed
+*/
         int totalHours = 0;
                 System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
                 System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
@@ -193,7 +205,6 @@ public class TripList {
             System.out.println(t.getTrip());
         }
         System.out.println("total work hours: " + totalHours);
-
 
 
         //Here... need some type of base case
