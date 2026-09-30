@@ -1,3 +1,4 @@
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.time.LocalTime;
 
@@ -120,7 +121,7 @@ public class TripList {
 
     public static void GreedyOptSchedule(ArrayList<Trip> interval) {
 
-        int totalWorkHours = 12;
+        long totalWorkHours = 12;
         //first thing _ sorting the interval
         interval.sort(Comparator.comparing(Trip::getFinishTime));
 
@@ -128,28 +129,34 @@ public class TripList {
         //now after sorting... i want to take the first job
         Trip before_trip = interval.getFirst(); //getting the first job
 
+        long workHours  = 0;
+
         optimal.add(before_trip);
-
-
         for (int elementI = 1; elementI < interval.size(); elementI++) { //taking the next trip after the 1st one on index(0) that was before_trip
 
-
             Trip current_trip = interval.get(elementI); //this is the current trip 1
+            long tripDuration = ChronoUnit.HOURS.between(before_trip.getStartTime(), current_trip.getFinishTime());
+
+
+            //i will try and enforce the 12hour duration
+            if (workHours + totalWorkHours > 12)
+                continue;
             //for this case i'm let
-            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())) {
+            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime()) ) {
                 optimal.add(current_trip);//append to my array
                 before_trip = current_trip;//saving this trip to be the one to compare as "before" for next comparison
+
+                workHours += tripDuration;
             }
 
         }//testing to see if it can print the optimal jobs..
         int totalHours = 0;
-        System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
+        System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
         for (Trip t : optimal) {
             totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
             System.out.println(t.getTrip());
         }
         System.out.println("total work hours: " + totalHours);
-
 
     }
 }
