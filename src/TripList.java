@@ -66,6 +66,10 @@ public class TripList {
     }
 
     public static void main(String[] args) {
+        Trip main_interval = new Trip(LocalTime.of(00,00),LocalTime.of(23,59),Integer.MAX_VALUE);
+        //driver has to work 12 hours per day
+        int daily_trip_Hours = 12;
+
         ArrayList<Trip> allTrips = getAllTrips();
 
 //        //first thing, i want to arrange all the trips _ this is starting from onwards
@@ -73,15 +77,62 @@ public class TripList {
 
         //verify the number of cars loaded
         System.out.println("Total trips loaded: " + allTrips.size());
+        for (Trip trip:allTrips)
+            System.out.println(trip.getTrip());
+
+        //sum of all the hours available to work for_ each trip
+        int totalHours = 0;
+        for(Trip trip:allTrips)
+            totalHours +=  (trip.getFinishTime().getHour() - trip.getStartTime().getHour());
+
+        System.out.println(" Total hours for all trips: " + totalHours +"hrs" );
         //System.out.println(allTrips.getLast().getTrip());
 
-        //checking if i can print all 13 trips
-        for(Trip trip:allTrips)
-            System.out.println( trip.getTrip());
+        //checking if i can print all 13 trips (already sorted)
+
+        Trip[] optimal = new Trip[allTrips.size()];
+        for(int i = 0 ; i < allTrips.size() - 1; i++){ //included the -1 because i'm tryna avoid out of bound exception
+            if ( allTrips.get(i).getFinishTime().isBefore(allTrips.get(i+1).getStartTime()))
+                optimal [i]= allTrips.get(i);
+            else
+                return;
+        }
+        System.out.println("printing optimal");
+        System.out.println("Total optimal trips: "  + optimal.length);
+//        for(Trip trip:allTrips){
+//                System.out.println( trip.getTrip());
+//        }
 
 
 
-        //before we go optimal, trying to do this greedily...i will use the EFT
+        //before we go optimal, trying to do this greedily...i will use the earliest finish
+        //to take get the optimal solution
+
+        //if getAllTrips().getLast().getFinishTime().
+
     }
+    //check if the break taken within is exactly 30 minutes
+    public boolean breakTime(Trip interval){
+//       Trip main_interval = new Trip(LocalTime.of(00,00),LocalTime.of(23,59),Integer.MAX_VALUE);
+
+       LocalTime allowedStartTime = interval.finish.plusMinutes(30);//adding the 30 min break
+       if (!interval.start.isBefore(allowedStartTime)) //cannot work before allowed start time which is 30 min
+           return true;
+
+       return false;
+    }
+
+    //checking if he drives 12hrs per day
+
+    public boolean workingHours(){
+
+        return false;
+    }
+
+
+    public static void greedyApproach(Trip j ){
+
+    }
+
 
 }
