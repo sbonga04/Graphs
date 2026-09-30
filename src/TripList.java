@@ -143,7 +143,7 @@ public class TripList {
             //i will try and enforce the 12hour duration
             if (workHours + totalWorkHours > 12)
                 continue;
-            //for this case i'm let
+            //for this case, checking who's who and who's not.
             if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())) {
                 optimal.add(current_trip);//append to my array
                 before_trip = current_trip;//saving this trip to be the one to compare as "before" for next comparison
@@ -162,34 +162,60 @@ public class TripList {
 
     }
 
-        public static void dynamicApproach(ArrayList<Trip> interval){
+    public static void dynamicApproach(ArrayList<Trip> interval){
 
-            System.out.println("\n\n"+"""
+        System.out.println("\n\n"+"""
                    !!!!!!!!calling THE DYNAMIC APPROACH !!!!!!!!!!!!!!!!!""" + "\n");
 
-            interval.sort(Comparator.comparing(Trip::getFinishTime));
-            //looking for optimal jobs.. just like prevously so here i'll just copy and paste the code from above since it's the same
-            ArrayList<Trip> optimal = new ArrayList<>();
-            Trip before_trip = interval.getFirst();
-            optimal.add(before_trip);
+        interval.sort(Comparator.comparing(Trip::getFinishTime));
+        //looking for optimal jobs.. just like prevously so here i'll just copy and paste the code from above since it's the same
+        ArrayList<Trip> optimal = new ArrayList<>();
+        Trip before_trip = interval.getFirst();
+        optimal.add(before_trip);
 
-            for (int i =1 ; i < interval.size(); i ++){
 
-                Trip current_trip = interval.get(i);
+        for (int i =1 ; i < interval.size(); i ++){
 
-                if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
-                    optimal.add(current_trip);
-                    before_trip = current_trip;
-                }
+            Trip current_trip = interval.get(i);
 
-                //testin
+            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
+                optimal.add(current_trip);
+                before_trip = current_trip;
             }
-            int totalHours = 0;
+            //up until here... we now know who's on the optimal schedule
+
+        }
+        int totalHours = 0;
+                System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
+                System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
+        for (Trip t : optimal) {
+            totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
+            System.out.println(t.getTrip());
+        }
+        System.out.println("total work hours: " + totalHours);
+
+
+
+        //Here... need some type of base case
+        int [] M = new int[optimal.size()];
+        M[0] = optimal.getFirst().capacity;
+
+        for (int trip = 1; trip<optimal.size(); trip ++) {
+            //this operation = taking the value of the first M[0] and adding the current_trip.capacity
+            //assigning all that to M[1]
+            M[trip] = M[trip - 1] + optimal.get(trip).getCapacity();
+        }
+
+        int maxCapacity = M[M.length-1];
+        System.out.println(Arrays.toString(M));
+        System.out.println("Maximum total capacity obtained was: " + maxCapacity);
+                //testin
+        /*    int totalHours = 0;
             System.out.println("optimal non-overlapping schedule size within 12 hours: " + optimal.size());
             for (Trip t: optimal) {
                 totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
                 System.out.println(t.getTrip());
             }
             System.out.println("total work hours: " + totalHours );
-        }
+        */}
 }
