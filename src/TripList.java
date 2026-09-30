@@ -95,6 +95,8 @@ public class TripList {
         System.out.println("\n");
         GreedyOptSchedule(allTrips);
 
+        dynamicApproach(allTrips);
+
         //before we go optimal, trying to do this greedily...i will use the earliest finish
         //to take get the optimal solution
 
@@ -129,7 +131,7 @@ public class TripList {
         //now after sorting... i want to take the first job
         Trip before_trip = interval.getFirst(); //getting the first job
 
-        long workHours  = 0;
+        long workHours = 0;
 
         optimal.add(before_trip);
         for (int elementI = 1; elementI < interval.size(); elementI++) { //taking the next trip after the 1st one on index(0) that was before_trip
@@ -142,7 +144,7 @@ public class TripList {
             if (workHours + totalWorkHours > 12)
                 continue;
             //for this case i'm let
-            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime()) ) {
+            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())) {
                 optimal.add(current_trip);//append to my array
                 before_trip = current_trip;//saving this trip to be the one to compare as "before" for next comparison
 
@@ -159,4 +161,35 @@ public class TripList {
         System.out.println("total work hours: " + totalHours);
 
     }
+
+        public static void dynamicApproach(ArrayList<Trip> interval){
+
+            System.out.println("\n\n"+"""
+                   !!!!!!!!calling THE DYNAMIC APPROACH !!!!!!!!!!!!!!!!!""" + "\n");
+
+            interval.sort(Comparator.comparing(Trip::getFinishTime));
+            //looking for optimal jobs.. just like prevously so here i'll just copy and paste the code from above since it's the same
+            ArrayList<Trip> optimal = new ArrayList<>();
+            Trip before_trip = interval.getFirst();
+            optimal.add(before_trip);
+
+            for (int i =1 ; i < interval.size(); i ++){
+
+                Trip current_trip = interval.get(i);
+
+                if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
+                    optimal.add(current_trip);
+                    before_trip = current_trip;
+                }
+
+                //testin
+            }
+            int totalHours = 0;
+            System.out.println("optimal non-overlapping schedule size within 12 hours: " + optimal.size());
+            for (Trip t: optimal) {
+                totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
+                System.out.println(t.getTrip());
+            }
+            System.out.println("total work hours: " + totalHours );
+        }
 }
