@@ -22,6 +22,9 @@ public class TripList {
         Trip trip12 = new Trip(LocalTime.of(20, 0), LocalTime.of(23, 0), 18);
         Trip trip13 = new Trip(LocalTime.of(13, 0), LocalTime.of(18, 0), 20);
 
+        //thinking of considering basic arrays.. but i'll see later
+        //Trip interval[] = new Trip[20];
+
 
         ArrayList<Trip> trips = new ArrayList<>();
         trips.add(trip1);
@@ -84,16 +87,17 @@ public class TripList {
         //checking if i can print all 13 trips (already sorted)
 
 
-//        for(Trip trip:allTrips){
-//                System.out.println( trip.getTrip());
-//        }
+        for(Trip trip:allTrips){
+            System.out.println( trip.getTrip());
+        }
 
+        System.out.println("\n");
+        optSchedule(allTrips);
 
         //before we go optimal, trying to do this greedily...i will use the earliest finish
         //to take get the optimal solution
 
         //if getAllTrips().getLast().getFinishTime().
-
     }
     //check if the break taken within is exactly 30 minutes
     public boolean breakTime(Trip interval){
@@ -114,13 +118,33 @@ public class TripList {
     }
 
 
-    public static int greedyApproach(int j ){
-        if ( j == 0)
-            return 0;
+    public static void optSchedule(ArrayList<Trip> interval) {
+        //sorting the interval
+        interval.sort(Comparator.comparing(Trip::getFinishTime));
 
-        else return max(j+ greedyApproach(j), greedyApproach(j - 1));
+        ArrayList<Trip> optimal = new ArrayList<>();
+
+        Trip before_trip = interval.getFirst();
+        optimal.add(before_trip);
+
+        //gonna use pointers elementI and elementJ to cals p(interval-not overlapping)
+
+        for (int elementI = 1; elementI < interval.size(); elementI++) {
+
+            //look for non-overlapping
+            Trip current_trip = interval.get(elementI);
+            //for this case i'm letting elementI be an element before J if we starting from the last job
+            if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())) {
+                optimal.add(current_trip);
+                before_trip = current_trip;
+            }
+
+        }
+        System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
+        for (Trip t : optimal) {
+            System.out.println(t.getTrip());
+        }
+
 
     }
-
-
 }
