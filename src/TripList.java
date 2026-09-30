@@ -92,7 +92,7 @@ public class TripList {
         }
 
         System.out.println("\n");
-        optSchedule(allTrips);
+        GreedyOptSchedule(allTrips);
 
         //before we go optimal, trying to do this greedily...i will use the earliest finish
         //to take get the optimal solution
@@ -118,32 +118,37 @@ public class TripList {
     }
 
 
-    public static void optSchedule(ArrayList<Trip> interval) {
-        //sorting the interval
+    public static void GreedyOptSchedule(ArrayList<Trip> interval) {
+
+        int totalWorkHours = 12;
+        //first thing _ sorting the interval
         interval.sort(Comparator.comparing(Trip::getFinishTime));
 
-        ArrayList<Trip> optimal = new ArrayList<>();
+        ArrayList<Trip> optimal = new ArrayList<>(); //keeping this array for later optimal trip
+        //now after sorting... i want to take the first job
+        Trip before_trip = interval.getFirst(); //getting the first job
 
-        Trip before_trip = interval.getFirst();
         optimal.add(before_trip);
 
-        //gonna use pointers elementI and elementJ to cals p(interval-not overlapping)
 
-        for (int elementI = 1; elementI < interval.size(); elementI++) {
+        for (int elementI = 1; elementI < interval.size(); elementI++) { //taking the next trip after the 1st one on index(0) that was before_trip
 
-            //look for non-overlapping
-            Trip current_trip = interval.get(elementI);
-            //for this case i'm letting elementI be an element before J if we starting from the last job
+
+            Trip current_trip = interval.get(elementI); //this is the current trip 1
+            //for this case i'm let
             if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())) {
-                optimal.add(current_trip);
-                before_trip = current_trip;
+                optimal.add(current_trip);//append to my array
+                before_trip = current_trip;//saving this trip to be the one to compare as "before" for next comparison
             }
 
-        }
+        }//testing to see if it can print the optimal jobs..
+        int totalHours = 0;
         System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
         for (Trip t : optimal) {
+            totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
             System.out.println(t.getTrip());
         }
+        System.out.println("total work hours: " + totalHours);
 
 
     }
