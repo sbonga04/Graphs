@@ -28,6 +28,9 @@ public class Trip {
     public char getCar() {
         return car;
     }
+    public int setCapacity(int capacity){
+        return this.capacity = capacity;
+    }
 
     public String getTrip(){
         return "Car " + car + ": -> Trip {start= " + this.start + ", finish= "+this.finish + " capacity= "+this.capacity +"}";

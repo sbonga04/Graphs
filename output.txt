@@ -1,0 +1,20 @@
+Total trips loaded: 13
+
+2.a Optimal non-overlapping schedule size within 12 working hours: 2
+Car E: -> Trip {start= 02:00, finish= 04:00 capacity= 13}
+Car I: -> Trip {start= 05:00, finish= 10:00 capacity= 15}
+total work hours: 7
+
+2b. if the driver were to earn R10 after every trip: R70
+
+DYNAMIC APPROACH
+
+2d.Optimal non-overlapping schedule size within 12 working hours: 3
+Car E: -> Trip {start= 02:00, finish= 04:00 capacity= 13}
+Car I: -> Trip {start= 05:00, finish= 10:00 capacity= 15}
+Car J: -> Trip {start= 11:00, finish= 14:00 capacity= 45}
+total work hours: 10
+[45, 15, 13]
+total capacity: 73
+Maximum total capacity obtained was: 45
+2c. if the driver were to earn R10 after every trip: R730

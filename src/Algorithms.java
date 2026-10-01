@@ -6,8 +6,11 @@ import java.util.Comparator;
 public class Algorithms {
 
     public static void GreedyOptSchedule(ArrayList<Trip> interval) {
+        //greedy approach..i will use the earliest finish
+        //to take get the optimal solution
 
-        long totalWorkHours = 12;
+
+        long totalWorkHours = 10;
         //first thing _ sorting the interval
         interval.sort(Comparator.comparing(Trip::getFinishTime));
 
@@ -37,7 +40,7 @@ public class Algorithms {
 
         }//testing to see if it can print the optimal jobs..
         int totalHours = 0;
-        System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
+        System.out.println("2.a Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
         for (Trip t : optimal) {
             totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
             System.out.println(t.getTrip());
@@ -46,10 +49,12 @@ public class Algorithms {
 
     }
 
+
+
     public static void dynamicApproach(ArrayList<Trip> interval){
 
-        System.out.println("\n\n"+"""
-                   !!!!!!!!calling THE DYNAMIC APPROACH !!!!!!!!!!!!!!!!!""" + "\n");
+        System.out.println("\n"+"""
+                   DYNAMIC APPROACH """ + "\n");
 
         interval.sort(Comparator.comparing(Trip::getFinishTime));
         long totalWorkHours = 0;
@@ -79,11 +84,11 @@ public class Algorithms {
         }
 
 /*
-         set this up for testing if opt jobs can be printed
+        set this up for testing if opt jobs can be printed
 */
-        int totalHours = 0;
 
-        System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
+        int totalHours = 0;
+        System.out.println("2d.Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
         for (Trip t : optimal) {totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
             System.out.println(t.getTrip());
         }
@@ -91,12 +96,10 @@ public class Algorithms {
 
         //part of the Dynamic programming(memoization) step, not the recurssion kind
 
-        //Here... need some type of base case
         int [] M = new int[optimal.size()];
+        //Here... need some type of base case
         M[0] = optimal.getFirst().capacity;
         int max_capacity = M[0];
-
-        Trip start = optimal.getFirst();
 
         for (int trip = 0; trip<optimal.size(); trip ++) {
             //writing capacity to the Memoized array
@@ -114,7 +117,6 @@ public class Algorithms {
         System.out.println(M_opt);
         int maxCapacity = M[M.length-1];
 
-        //System.out.println("total work hours: " + totalWorkHours);
         System.out.println("total capacity: " + total_capacity);
         System.out.println("Maximum total capacity obtained was: " + maxCapacity);
         //testin
