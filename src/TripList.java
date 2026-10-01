@@ -168,29 +168,25 @@ public class TripList {
                    !!!!!!!!calling THE DYNAMIC APPROACH !!!!!!!!!!!!!!!!!""" + "\n");
 
         interval.sort(Comparator.comparing(Trip::getFinishTime));
-        long totalWorkHours = 12;
+        long totalWorkHours = 0;
         //looking for optimal jobs.. just like prevously so here i'll just copy and paste the code from above since it's the same
         ArrayList<Trip> optimal = new ArrayList<>();
         Trip before_trip = interval.getFirst();
         optimal.add(before_trip);
 
         long workHours = 0;
+
         for (int i =1 ; i < interval.size(); i ++){
 
             Trip current_trip = interval.get(i);
 
-            long tripDuration = ChronoUnit.HOURS.between(before_trip.getStartTime(), current_trip.getFinishTime());
-            //i will try and enforce the 12hour duration
-            if (workHours + totalWorkHours > 12)
-                continue;
-
+            //up until here... we now know who's on the optimal schedule
             if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
                 optimal.add(current_trip);
                 before_trip = current_trip;
 
-                totalWorkHours += tripDuration;
-            }
-            //up until here... we now know who's on the optimal schedule
+                /*    totalWorkHours += tripDuration;
+                 */}
 
         }
 
@@ -198,8 +194,8 @@ public class TripList {
          set this up for testing if opt jobs can be printed
 */
         int totalHours = 0;
-                System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
-                System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
+        System.out.println("Optimal non-overlapping schedule size: " + optimal.size());
+        System.out.println("Optimal non-overlapping schedule size within 12 working hours: " + optimal.size());
         for (Trip t : optimal) {
             totalHours += t.getFinishTime().getHour() - t.getStartTime().getHour();
             System.out.println(t.getTrip());
@@ -207,20 +203,44 @@ public class TripList {
         System.out.println("total work hours: " + totalHours);
 
 
+
+
+
+
+
+        optimal.sort(Comparator.comparing(Trip::getFinishTime));
+        long working_hours = 0;
+
         //Here... need some type of base case
         int [] M = new int[optimal.size()];
         M[0] = optimal.getFirst().capacity;
+        int max_capacity = M[0];
 
-        for (int trip = 1; trip<optimal.size(); trip ++) {
-            //this operation = taking the value of the first M[0] and adding the current_trip.capacity
-            //assigning all that to M[1]
-            M[trip] = M[trip - 1] + optimal.get(trip).getCapacity();
+
+        Trip start = optimal.getFirst();
+
+        for (int trip = 0; trip<optimal.size(); trip ++) {
+
+            M[trip] =  optimal.get(trip).getCapacity();
+
+
         }
 
+
+        Arrays.sort(M);
+        int total_capacity = 0;
+        ArrayList<Integer> M_opt = new ArrayList<>();
+        for (int x = M.length - 1; x >= 0; x--) {
+            total_capacity += M[x];
+            M_opt.add(M[x]);
+        }
+        System.out.println(M_opt);
         int maxCapacity = M[M.length-1];
-        System.out.println(Arrays.toString(M));
+
+        //System.out.println("total work hours: " + totalWorkHours);
+        System.out.println("total capacity: " + total_capacity);
         System.out.println("Maximum total capacity obtained was: " + maxCapacity);
-                //testin
+        //testin
         /*    int totalHours = 0;
             System.out.println("optimal non-overlapping schedule size within 12 hours: " + optimal.size());
             for (Trip t: optimal) {
