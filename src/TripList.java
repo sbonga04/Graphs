@@ -174,19 +174,22 @@ public class TripList {
         Trip before_trip = interval.getFirst();
         optimal.add(before_trip);
 
-        long workHours = 0;
 
         for (int i =1 ; i < interval.size(); i ++){
 
             Trip current_trip = interval.get(i);
 
             //up until here... we now know who's on the optimal schedule
+            long tripDuration = ChronoUnit.HOURS.between(current_trip.getStartTime(), current_trip.getFinishTime());
+            if (tripDuration + totalWorkHours > 12)
+                break;
+
             if (current_trip.getStartTime().isAfter(before_trip.getFinishTime())){
                 optimal.add(current_trip);
                 before_trip = current_trip;
 
-                /*    totalWorkHours += tripDuration;
-                 */}
+                    totalWorkHours += tripDuration;
+                 }
 
         }
 
@@ -205,12 +208,6 @@ public class TripList {
 
 
 
-
-
-
-        optimal.sort(Comparator.comparing(Trip::getFinishTime));
-        long working_hours = 0;
-
         //Here... need some type of base case
         int [] M = new int[optimal.size()];
         M[0] = optimal.getFirst().capacity;
@@ -223,9 +220,7 @@ public class TripList {
 
             M[trip] =  optimal.get(trip).getCapacity();
 
-
         }
-
 
         Arrays.sort(M);
         int total_capacity = 0;
